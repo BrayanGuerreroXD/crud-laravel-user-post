@@ -22,22 +22,31 @@ class RoleSeeder extends Seeder
         $Publisher = Role::create(['name' => 'PUBLICADOR']);
         $Visitor = Role::create(['name' => 'VISITANTE']);
 
+        // Create permissions
         $PostIndex =  Permission::create(['name' => 'post.index']);
+
+        $UserEdit = Permission::create(['name' => 'user.edit']);
 
         $PublisherPostCreate = Permission::create(['name' => 'publisher.post.create']);
         $PublisherPostEdit = Permission::create(['name' => 'publisher.post.edit']);
         $PublisherPostDestroy = Permission::create(['name' => 'publisher.post.destroy']);
 
         $AdminUserIndex = Permission::create(['name' => 'admin.user.index']);
+        $AdminUserCreate = Permission::create(['name' => 'admin.user.create']);
+        $AdminUserDestroy = Permission::create(['name' => 'admin.user.destroy']);
         $AdminUserAssignRole = Permission::create(['name' => 'admin.user.assign-role']);
 
+        // Assign permissions to roles
         $PostIndex->syncRoles([$Admin, $Publisher, $Visitor]);
+        $UserEdit->syncRoles([$Admin, $Publisher, $Visitor]);
 
         $PublisherPostCreate->syncRoles([$Publisher]);
         $PublisherPostEdit->syncRoles([$Publisher]);
         $PublisherPostDestroy->syncRoles([$Publisher]);
 
         $AdminUserIndex->syncRoles([$Admin]);
+        $AdminUserCreate->syncRoles([$Admin]);
+        $AdminUserDestroy->syncRoles([$Admin]);
         $AdminUserAssignRole->syncRoles([$Admin]);
     }
 }

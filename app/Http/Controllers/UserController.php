@@ -13,7 +13,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $this->authorize('admin.user.index', User::class); // Only Admin can access this route
+        $users = User::all();
+        return view('users.index', compact('users'));
     }
 
     /**
@@ -23,7 +25,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $this->authorize('admin.user.create', User::class); // Only Admin can access this route
+        $roles = Role::all();
+        return view('users.create', compact('roles'));
     }
 
     /**
@@ -34,7 +38,17 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->authorize('admin.user.create', User::class); // Only Admin can access this route
+
+        $user = new User();
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->password = Hash::make($request->input('password'));
+        $user->save();
+
+        $user->assignRole($request->input('role'));
+
+        return redirect()->route('users.index');
     }
 
     /**
@@ -56,7 +70,9 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $this->authorize('user.edit', $user); // Every user can edit his own profile
+        $roles = Role::all();
+        return view('users.edit', compact('user', 'roles'));
     }
 
     /**
@@ -68,7 +84,18 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->authorize('update', $user); // Every user can edit his own profile
+
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        if ($request->input('password')) {
+            $user->password = Hash::make($request->input('password'));
+        }
+        $user->save();
+
+        $user->syncRoles([$request->input('role')]);
+
+        return redirect()->route('users.index');
     }
 
     /**
@@ -79,6 +106,8 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $this->authorize('admin.user.destroy', $user); // Only Admin can delete users
+        $user->delete();
+        return redirect()->route('users.index');
     }
 }
