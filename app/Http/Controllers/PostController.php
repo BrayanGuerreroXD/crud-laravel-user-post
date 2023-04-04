@@ -13,7 +13,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $posts = Post::all();
+        return view('posts.index', compact('posts'));
     }
 
     /**
@@ -23,7 +24,8 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        $this->authorize('publisher.post.create');
+        return view('posts.create');
     }
 
     /**
@@ -34,7 +36,12 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->authorize('publisher.post.create');
+
+        $Post = Post::create($request->all());
+
+        return redirect()->route('posts.index')
+            ->with('success', 'Post created successfully.');
     }
 
     /**
@@ -56,7 +63,9 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        //
+        $post = Post::find($id);
+        $this->authorize('publisher.post.edit', $post);
+        return view('posts.edit', compact('post'));
     }
 
     /**
@@ -68,7 +77,12 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $post = Post::find($id);
+        $this->authorize('publisher.post.edit', $post);
+        $post->update($request->all());
+
+        return redirect()->route('posts.index')
+        ->with('success', 'Post update successfully');;
     }
 
     /**
@@ -79,6 +93,10 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post = Post::find($id)->delete();
+        $this->authorize('publisher.post.destroy', $post);
+
+        return redirect()->route('posts.index')
+        ->with('success', 'Post deleted successfully');
     }
 }
