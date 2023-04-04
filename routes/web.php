@@ -17,4 +17,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('posts', PostController::class)->middleware('role:publicador');
+Route::resource('posts', PostController::class)->middleware('role:publicador')
+->group(function () {
+    Route::get('/posts/create', 'PostController@create')->name('posts.create');
+    Route::post('/posts', 'PostController@store')->name('posts.store');
+});
