@@ -22,9 +22,12 @@ class RoleSeeder extends Seeder
         $Publicador = Role::create(['name' => 'PUBLICADOR']);
         $Visitante = Role::create(['name' => 'VISITANTE']);
 
-        Permission::create(['name' => 'create-post']); // solo para el rol "publicador"
-        Permission::create(['name' => 'edit-post']); // solo para el rol "publicador"
-        Permission::create(['name' => 'delete-post']); // solo para el rol "publicador"
-        Permission::create(['name' => 'assign-role']); // solo para el rol "admin"
+        Permission::create(['name' => 'post.index']);
+        Permission::create(['name' => 'publicador.post.create']);
+        Permission::create(['name' => 'publicador.post.edit']);
+        Permission::create(['name' => 'publicador.post.destroy']);
+
+        Permission::create(['name' => 'admin.user.index']);
+        Permission::create(['name' => 'admin.user.assign-role']);
     }
 }
